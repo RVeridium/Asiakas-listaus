@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;control.asiakkaat&apos; to &apos;Asiakkaat&apos;&#x0D;&#x0A;- Original project: &apos;Noutaja&apos;&#x0D;&#x0A;- Original element: &apos;control.asiakkaat&apos;&#x0D;&#x0A;- Renamed element: &apos;control.Asiakkaat&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;asiakkaat&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;control{asiakkaat.java[asiakkaat" matchStrategy="1" name="Asiakkaat" qualified="false" references="true" similarDeclarations="false" stamp="1605357167156" textual="false" version="1.0"/>
+</session>

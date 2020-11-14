@@ -1,0 +1,49 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<title>Liikaa asiakkaita</title>
+</head>
+<body>
+	<table id="lista">
+		<thead>
+		<tr>
+			<th class="right" colspan="2">Hakusana:></th>
+			<th><input type="text" id="term"></th>
+			<th><input type="button" value="hae" id="nappi"></th>
+		</tr>
+		<tr>
+			<th>Etunimi</th>
+			<th>Sukunimi</th>
+			<th>Puhelin</th>
+			<th>Sposti</th>
+		</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+<script>
+$(document).ready(function(){
+	
+	haeAutot();
+	$("#nappi").click(function(){		
+		haeAutot();
+	});
+	$(document.body).on("keydown", function(event){
+		  if(event.which==13){
+			  haeAutot();
+		  }
+	});
+	$("#term").focus();
+});	
+
+
+
+
+</script>
+
+</body>
+</html>
