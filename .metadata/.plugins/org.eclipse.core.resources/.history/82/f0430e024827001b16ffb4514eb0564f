@@ -27,22 +27,16 @@ public class Asiakkaat extends HttpServlet {
 		//System.out.println("Asiakkaat.doGet()");
 		String pathInfo =request.getPathInfo();
 		//System.out.println(pathInfo);
-		String sStr="";
-		Dao dao = new Dao();
-		ArrayList<Asiakas> asLista = new ArrayList<Asiakas>(); 
-		if(pathInfo==null) {
-			asLista=dao.listAll();
-		}
 		if(pathInfo!=null) {
-			sStr=pathInfo.replace("/","");
-			asLista=dao.listAll(sStr);
+			String sStr=pathInfo.replace("/","");
 		}
-		//nyt parametritonta gettiä ei käytetä ollenkaan, mikä voi hidastaa jos datasetti on iso. 
+		Dao dao = new Dao();
+		ArrayList<Asiakas> asLista=dao.listAll(sStr);
 		//System.out.println(asLista);
 		String asJSON= new JSONObject().put("asiakkaat", asLista).toString(); 
 		response.setContentType("application/json");
 		PrintWriter out=response.getWriter(); 
-		out.println(asJSON); //tulostaa selaimeen. 
+		out.println(asJSON);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
