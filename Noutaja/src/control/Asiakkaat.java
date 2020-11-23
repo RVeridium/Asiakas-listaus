@@ -37,7 +37,7 @@ public class Asiakkaat extends HttpServlet {
 			sStr=pathInfo.replace("/","");
 			asLista=dao.listAll(sStr);
 		}
-		//nyt parametritonta getti‰ ei k‰ytet‰ ollenkaan, mik‰ voi hidastaa jos datasetti on iso. 
+		//nyt parametritonta getti√§ ei k√§ytet√§ ollenkaan, mik√§ voi hidastaa jos datasetti on iso. 
 		//System.out.println(asLista);
 		String asJSON= new JSONObject().put("asiakkaat", asLista).toString(); 
 		response.setContentType("application/json");
@@ -47,6 +47,21 @@ public class Asiakkaat extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Asiakkaat.doPost()");
+		JSONObject jsonObj = new JsonStrToObj().convert(request);
+		Asiakas asiakas = new Asiakas();
+		asiakas.setEtunimi(jsonObj.getString("fName"));
+		asiakas.setSukunimi(jsonObj.getString("lName"));
+		asiakas.setPuhelin(jsonObj.getString("phone"));
+		asiakas.setSposti(jsonObj.getString("email"));
+		response.setContentType("application/json");
+		PrintWriter out=response.getWriter();
+		Dao dao = new Dao();
+		if (dao.addCustomer(asiakas)) {
+			out.println("{\"response\":1}");
+		} else {
+			out.println("{\"response\":0}");
+		}
+		
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -55,6 +70,23 @@ public class Asiakkaat extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Asiakkaat.doDelete()");
+		String pathInfo = request.getPathInfo();	//haetaan kutsun polkutiedot, esim. /ABC-222		
+		System.out.println("polku: "+pathInfo);
+		String poisto_id = pathInfo.replace("/", "");		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Dao dao = new Dao();			
+		if(dao.poistaAsiakas(poisto_id)){ //metodi palauttaa true/false
+			out.println("{\"response\":1}");  //Auton poistaminen onnistui {"response":1}
+		}else{
+			out.println("{\"response\":0}");  //Auton poistaminen epÔøΩonnistui {"response":0}
+		}
+		
+		
+		
+		
+		
+		//korjaa style.css johonkin kuntoo. 
 	}
 
 }

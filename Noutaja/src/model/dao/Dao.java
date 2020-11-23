@@ -92,5 +92,43 @@ public class Dao {
 		return asiakkaat;
 	}
 	
+	public boolean addCustomer(Asiakas asiakas) {
+		boolean paluu = true; 
+		sql = "INSERT INTO asiakkaat (etunimi, sukunimi, puhelin, sposti) VALUES (?,?,?,?)";
+		try {
+			con=yhdista();
+			prep = con.prepareStatement(sql); 
+			prep.setString(1, asiakas.getEtunimi());
+			prep.setString(2, asiakas.getSukunimi());
+			prep.setString(3, asiakas.getPuhelin());
+			prep.setString(4, asiakas.getSposti());
+			prep.executeUpdate(); 
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			paluu=false; 
+		}
+		return paluu; 
+	}
+	
+	public boolean poistaAsiakas(String asiakas_id) {
+		boolean paluu = true;
+		//asiakas_id = Integer.parseInt(asiakas_id);
+		sql = "DELETE FROM asiakkaat WHERE asiakas_id=?";
+		try {
+			con=yhdista();
+			prep = con.prepareStatement(sql);
+			prep.setString(1, asiakas_id);
+			prep.executeUpdate(); 
+			con.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			paluu=false; 
+		}		
+		return paluu; 
+		
+	}
+	
 
 }
