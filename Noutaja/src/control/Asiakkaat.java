@@ -22,24 +22,36 @@ public class Asiakkaat extends HttpServlet {
         System.out.println("Asiakkaat.Asiakkaat()");
     }
 
-	
+	//+ asiakkaat/getone/asiakas_id
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//System.out.println("Asiakkaat.doGet()");
+		System.out.println("Asiakkaat.doGet()");
 		String pathInfo =request.getPathInfo();
-		//System.out.println(pathInfo);
-		String sStr="";
+		System.out.println(pathInfo); 
 		Dao dao = new Dao();
-		ArrayList<Asiakas> asLista = new ArrayList<Asiakas>(); 
+		ArrayList<Asiakas> asLista = new ArrayList<Asiakas>();
+		String asJSON = ""; 
 		if(pathInfo==null) {
 			asLista=dao.listAll();
-		}
-		if(pathInfo!=null) {
-			sStr=pathInfo.replace("/","");
+			asJSON= new JSONObject().put("asiakkaat", asLista).toString(); 
+		} else if (pathInfo.indexOf("getone")!=-1) {
+			System.out.println("Nyt getonissa");
+			String as_id = pathInfo.replace("/getone/", "");
+			Asiakas asiakas = dao.getSingle(as_id);
+			JSONObject JSON = new JSONObject(); 
+			JSON.put("asiakas_id", asiakas.getAsiakas_id());
+			JSON.put("etunimi", asiakas.getEtunimi());
+			JSON.put("sukunimi", asiakas.getSukunimi());
+			JSON.put("puhelin", asiakas.getPuhelin());
+			JSON.put("sposti", asiakas.getSposti());
+			asJSON = JSON.toString(); 
+			System.out.println(asJSON);
+		} else {
+			String sStr=pathInfo.replace("/","");
 			asLista=dao.listAll(sStr);
+			asJSON= new JSONObject().put("asiakkaat", asLista).toString(); 
 		}
 		//nyt parametritonta gettiä ei käytetä ollenkaan, mikä voi hidastaa jos datasetti on iso. 
 		//System.out.println(asLista);
-		String asJSON= new JSONObject().put("asiakkaat", asLista).toString(); 
 		response.setContentType("application/json");
 		PrintWriter out=response.getWriter(); 
 		out.println(asJSON); //tulostaa selaimeen. 
@@ -65,7 +77,22 @@ public class Asiakkaat extends HttpServlet {
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Asiakkaat.doPut()");
+		//System.out.println("Asiakkaat.doPut()");
+		JSONObject jsonObj = new JsonStrToObj().convert(request);
+		String as_id = jsonObj.getString("asiakas_id"); 
+		Asiakas asiakas = new Asiakas();
+		asiakas.setEtunimi(jsonObj.getString("fName"));
+		asiakas.setSukunimi(jsonObj.getString("lName"));
+		asiakas.setPuhelin(jsonObj.getString("phone"));
+		asiakas.setSposti(jsonObj.getString("email"));
+		response.setContentType("application/json");
+		PrintWriter out=response.getWriter();
+		Dao dao = new Dao();
+		if (dao.changeCustomer(asiakas, as_id)) {
+			out.println("{\"response\":1}");//jep
+		} else {
+			out.println("{\"response\":0}");//ei onnistu
+		}
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

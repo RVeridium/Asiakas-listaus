@@ -60,15 +60,16 @@
 				rowStr+="<td>"+field.sukunimi+"</td>";
 				rowStr+="<td>"+field.puhelin+"</td>";
 				rowStr+="<td>"+field.sposti+"</td>";
-				rowStr+="<td><span class='delete' onclick=poista('"+field.asiakas_id+"')>Poista</span></td>";
+				rowStr+="<td><a href='muutaasiakas.jsp?asiakas_id="+field.asiakas_id+"'>Muuta</a>&nbsp;";
+				rowStr+="<span class='delete' onclick=poista("+field.asiakas_id+",'"+field.etunimi+"','"+field.sukunimi+"')>Poista</span></td>";
 				rowStr+="</tr>";
 				$("#lista tbody").append(rowStr); 
 			});
 		}});
 	};
 	
-	function poista(asiakas_id) {
-		if(confirm("Poista asiakas " + asiakas_id +"?")){
+	function poista(asiakas_id, etunimi, sukunimi) {
+		if(confirm("Poista asiakas " + etunimi +" "+ sukunimi + "?")){
 			$.ajax({url:"asiakkaat/"+asiakas_id, type:"DELETE", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}
 		        if(result.response==0){
 		        	$("#ilmo").html("Asiakasta ei voitu poistaa.");

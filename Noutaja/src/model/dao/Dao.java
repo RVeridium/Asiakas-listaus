@@ -103,6 +103,7 @@ public class Dao {
 			prep.setString(3, asiakas.getPuhelin());
 			prep.setString(4, asiakas.getSposti());
 			prep.executeUpdate(); 
+			//System.out.println(prep.getGeneratedKeys().getInt(1)); jos tahtoo palauttaa uusimman id:n
 			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,6 +129,54 @@ public class Dao {
 		}		
 		return paluu; 
 		
+	}
+	
+	public Asiakas getSingle(String asiakas_id) {
+		Asiakas as = null; 
+		sql = "SELECT * FROM asiakkaat WHERE asiakas_id=?"; 
+		try {
+			con=yhdista();
+			if (con!=null) {
+				prep = con.prepareStatement(sql); 
+				prep.setString(1, asiakas_id);
+				rsl = prep.executeQuery(); 
+				if (rsl!=null) {
+					System.out.println();
+					while (rsl.next()) {
+						as= new Asiakas(); 
+						as.setAsiakas_id(rsl.getInt(1));
+						as.setEtunimi(rsl.getString(2));
+						as.setSukunimi(rsl.getString(3));
+						as.setPuhelin(rsl.getString(4));
+						as.setSposti(rsl.getString(5));
+					}
+				}
+				con.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return as; 
+	}
+	
+	public boolean changeCustomer(Asiakas asiakas, String as_id) {
+		boolean paluu = true; 
+		sql = "UPDATE asiakkaat SET etunimi=?, sukunimi=?, puhelin=?, sposti=? WHERE asiakas_id=?"; 
+		try {
+			con=yhdista();
+			prep = con.prepareStatement(sql); 
+			prep.setString(1, asiakas.getEtunimi());
+			prep.setString(2, asiakas.getSukunimi());
+			prep.setString(3, asiakas.getPuhelin());
+			prep.setString(4, asiakas.getSposti());
+			prep.setString(5, as_id);
+			prep.executeUpdate(); 
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			paluu=false; 
+		}	
+		return paluu; 
 	}
 	
 

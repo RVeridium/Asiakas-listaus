@@ -82,7 +82,8 @@ $(document).ready(function(){
 		submitHandler: function(form) {
 			lisaaAs(); 
 		}
-	});	
+	});
+	$("fName").focus(); 
 });
 function lisaaAs() {
 	var formJsonStr = formDataJsonStr($("#info").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
