@@ -94,3 +94,9 @@
 0:0:0:0:0:0:0:1 - - [04/Dec/2020:16:05:11 +0200] "GET /Noutaja/asiakkaat/ HTTP/1.1" 200 642
 0:0:0:0:0:0:0:1 - - [04/Dec/2020:16:05:19 +0200] "DELETE /Noutaja/asiakkaat/13 HTTP/1.1" 200 16
 0:0:0:0:0:0:0:1 - - [04/Dec/2020:16:05:21 +0200] "GET /Noutaja/asiakkaat/ HTTP/1.1" 200 542
+127.0.0.1 - - [04/Dec/2020:17:13:38 +0200] "GET / HTTP/1.1" 404 751
+127.0.0.1 - - [04/Dec/2020:17:14:21 +0200] "OPTIONS /Noutaja/asiakkaat HTTP/1.1" 200 -
+0:0:0:0:0:0:0:1 - - [04/Dec/2020:17:14:40 +0200] "GET /Noutaja/asiakkaat HTTP/1.1" 200 542
+0:0:0:0:0:0:0:1 - - [04/Dec/2020:17:15:26 +0200] "GET /Noutaja/asiakkaat/ HTTP/1.1" 200 542
+0:0:0:0:0:0:0:1 - - [04/Dec/2020:17:15:32 +0200] "GET /Noutaja/asiakkaat/ HTTP/1.1" 200 542
+0:0:0:0:0:0:0:1 - - [04/Dec/2020:17:16:04 +0200] "GET /Noutaja/asiakkaat HTTP/1.1" 200 542

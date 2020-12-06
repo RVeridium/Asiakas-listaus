@@ -37,17 +37,14 @@ public class Asiakkaat extends HttpServlet {
 			System.out.println("Nyt getonissa");
 			String as_id = pathInfo.replace("/getone/", "");
 			Asiakas asiakas = dao.getSingle(as_id);
-			if (asiakas==null) {
-				asJSON="{}"; 
-			} else {
-				JSONObject JSON = new JSONObject();
-				JSON.put("asiakas_id", asiakas.getAsiakas_id());
-				JSON.put("etunimi", asiakas.getEtunimi());
-				JSON.put("sukunimi", asiakas.getSukunimi());
-				JSON.put("puhelin", asiakas.getPuhelin());
-				JSON.put("sposti", asiakas.getSposti());
-				asJSON = JSON.toString(); 	
-			}
+			JSONObject JSON = new JSONObject(); 
+			JSON.put("asiakas_id", asiakas.getAsiakas_id());
+			JSON.put("etunimi", asiakas.getEtunimi());
+			JSON.put("sukunimi", asiakas.getSukunimi());
+			JSON.put("puhelin", asiakas.getPuhelin());
+			JSON.put("sposti", asiakas.getSposti());
+			asJSON = JSON.toString(); 
+			System.out.println(asJSON);
 		} else {
 			String sStr=pathInfo.replace("/","");
 			asLista=dao.listAll(sStr);

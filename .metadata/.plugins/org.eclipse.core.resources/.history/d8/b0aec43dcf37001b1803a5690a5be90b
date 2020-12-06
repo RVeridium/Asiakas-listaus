@@ -37,10 +37,10 @@ public class Asiakkaat extends HttpServlet {
 			System.out.println("Nyt getonissa");
 			String as_id = pathInfo.replace("/getone/", "");
 			Asiakas asiakas = dao.getSingle(as_id);
+			JSONObject JSON = new JSONObject();
 			if (asiakas==null) {
 				asJSON="{}"; 
 			} else {
-				JSONObject JSON = new JSONObject();
 				JSON.put("asiakas_id", asiakas.getAsiakas_id());
 				JSON.put("etunimi", asiakas.getEtunimi());
 				JSON.put("sukunimi", asiakas.getSukunimi());
