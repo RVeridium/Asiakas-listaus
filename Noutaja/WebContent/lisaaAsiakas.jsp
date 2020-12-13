@@ -5,8 +5,6 @@
 <head>
 <meta charset="ISO-8859-1">
 <script src="scripts/main.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <title>Uuden asiakkaan tiedot</title>
 </head>
@@ -15,7 +13,7 @@
 	<table>
 		<thead>
 			<tr>
-			<th colspan="4" class="right"><span id="back">Listaukseen</span></th>
+			<th colspan="4" class="right"><a id="back" href="listaaasiakkaat.jsp">Listaukseen</a></th>
 			</tr>
 			<tr>
 			<th>Etunimi</th><th>Sukunimi</th><th>Puhelin</th><th>Sposti</th>
@@ -27,7 +25,7 @@
 			<td><input type="text" name="lName" id="lName"></td>
 			<td><input type="text" name="phone" id="phone"></td>
 			<td><input type="text" name="email" id="email"></td>
-			<td><input type="submit" id="save" value="Lisäys"></td>
+			<td><input type="button" name="nap" id="tallennus" value="LisÃ¤ys" onclick="lisaaAs()"></td>
 			</tr>
 		</tbody>
 	</table>
@@ -35,67 +33,52 @@
 <span id="ilmo"></span>
 </body>
 <script>
-$(document).ready(function(){
-	$("#back").click(function() {
-		document.location="listaaasiakkaat.jsp";
-	});
-	
-	$("#info").validate({
-		rules: {
-			fName: {
-				required: true,
-				minlength: 2
-			},
-			lName: {
-				required: true,
-				minlength: 2
-			},
-			phone: {
-				required: true, 
-				minlength: 5,
-				maxlength: 15
-			},
-			email: {
-				required: true, 
-				minlength: 5
-			}
-		}, 
-		messages: {
-			fName: {
-				required: "Puuttuu",
-				minlength: "Liian lyhyt"
-			},
-			lName: {
-				required: "Puuttuu",
-				minlength: "Liian lyhyt"
-			},
-			phone: {
-				required: "Puuttuu", 
-				minlength: "Liian lyhyt",
-				maxlength: "Liian pitkä"
-			},
-			email: {
-				required: "Puuttuu", 
-				minlength: "Liian lyhyt"
-			}
-		}, 
-		submitHandler: function(form) {
-			lisaaAs(); 
-		}
-	});
-	$("fName").focus(); 
-});
+function tutkiKey(event){
+	if(event.keyCode==13){
+		lisaaAs();
+	}		
+}
+
+document.getElementById("fName").focus(); 
+
 function lisaaAs() {
-	var formJsonStr = formDataJsonStr($("#info").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
-	$.ajax({url:"asiakkaat", data:formJsonStr, type:"POST", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
-		if(result.response==0){
-      	$("#ilmo").html("Asiakasta ei voitu lisätä.");
-      }else if(result.response==1){			
-      	$("#ilmo").html("Asiakas lisätty.");
-      	$("#fName", "#lName", "#phone", "#email").val("");
-		}
-  }});	
+	var ilmo=""; 
+	if(document.getElementById("fName").value.length<2){
+		ilmo="Nimi ei kelpaa!";		
+	}else if(document.getElementById("lName").value.length<2){
+		ilmo="Nimi ei kelpaa!";		
+	}else if(document.getElementById("phone").value.length<5){
+		ilmo="Puhelinnumero on liian lyhyt!";		
+	}else if(document.getElementById("email").value.length<5){
+		ilmo="Email on liian lyhyt!";	
+	}
+	if(ilmo!=""){
+		document.getElementById("ilmo").innerHTML=ilmo;
+		setTimeout(function(){ document.getElementById("ilmo").innerHTML=""; }, 3000);
+		return;
+	}
 	
+	document.getElementById("fName").value=cleanUp(document.getElementById("fName").value);
+	document.getElementById("lName").value=cleanUp(document.getElementById("lName").value);
+	document.getElementById("phone").value=cleanUp(document.getElementById("phone").value);
+	document.getElementById("email").value=cleanUp(document.getElementById("email").value);	
+
+	var formJsonStr = formDataJsonStr(document.getElementById("info")); 
+	
+	fetch("asiakkaat", {method: "POST", body: formJsonStr})
+	.then( function (response) {	
+		return response.json()
+	})
+	.then( function (responseJson) {
+		var vastaus = responseJson.response;		
+		if(vastaus==0){
+			document.getElementById("ilmo").innerHTML="Asiakasta ei voitu lisÃ¤tÃ¤.";
+      	}else if(vastaus==1){	        	
+      		document.getElementById("ilmo").innerHTML="Asiakas lisÃ¤tty.";			      	
+		}
+		setTimeout(function(){ document.getElementById("ilmo").innerHTML=""; }, 5000);
+	});	
+	document.getElementById("info").reset(); 
 }
 
 

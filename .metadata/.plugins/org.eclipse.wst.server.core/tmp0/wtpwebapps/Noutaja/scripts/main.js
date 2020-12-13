@@ -15,3 +15,10 @@ function formDataJsonStr(formArray) {
 	}
 	return JSON.stringify(returnArray);
 }
+
+function cleanUp(teksti){
+	teksti=teksti.replace("<","");
+	teksti=teksti.replace(";","");
+	teksti=teksti.replace("'","''");
+	return teksti;
+}

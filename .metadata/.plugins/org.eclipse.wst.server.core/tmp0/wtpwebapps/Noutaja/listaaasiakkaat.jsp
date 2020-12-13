@@ -4,15 +4,14 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <title>Liikaa asiakkaita</title>
 </head>
-<body>
+<body onkeydown="tutkiKey(event)">
 <table id="lista">
 		<thead>
 		<tr>
-		<th colspan="5" class="right"><span id="lisaaUusi">Uusi asiakas</span></th>
+		<th colspan="5" class="right"><a id="lisaaUusi" href="lisaaAsiakas.jsp">Uusi asiakas</a></th>
 		</tr>
 		<tr>
 			<th class="right" colspan="2">Hakusana:</th>
@@ -26,7 +25,7 @@
 			<th colspan="2">Sposti</th>
 		</tr>
 		</thead>
-		<tbody>
+		<tbody id="tbody">
 		</tbody>
 	</table>
 	<span id='ilmo'></span>
@@ -34,54 +33,56 @@
 	
 
 <script>
-	$(document).ready(function(){
-		$("#lisaaUusi").click(function() {
-			document.location="lisaaAsiakas.jsp";
-		});
-		noudaAs(); 
-		$("#nappi").click(function(){		
-			noudaAs();
-		});
-		$(document.body).on("keydown", function(event){
-			  if(event.which==13){
-				  noudaAs();
-			  }
-		});
-		$("#term").focus();
-	});
+noudaAs();
+document.getElementById("term").focus();
+
+function tutkiKey(event){
+	if(event.keyCode==13){
+		noudaAs();
+	}		
+}
 	
-	function noudaAs() {
-		$("#lista tbody").empty(); 
-		$.ajax({url:"asiakkaat/"+$("#term").val(), type:"GET", dataType:"json", success:function(result) {
-			$.each(result.asiakkaat, function(i, field) {
-				var rowStr; 
-				rowStr+="<tr id='rivi_"+field.asiakas_id+"'>";
-				rowStr+="<td>"+field.etunimi+"</td>";
-				rowStr+="<td>"+field.sukunimi+"</td>";
-				rowStr+="<td>"+field.puhelin+"</td>";
-				rowStr+="<td>"+field.sposti+"</td>";
-				rowStr+="<td><a href='muutaasiakas.jsp?asiakas_id="+field.asiakas_id+"'>Muuta</a>&nbsp;";
-				rowStr+="<span class='delete' onclick=poista("+field.asiakas_id+",'"+field.etunimi+"','"+field.sukunimi+"')>Poista</span></td>";
-				rowStr+="</tr>";
-				$("#lista tbody").append(rowStr); 
-			});
-		}});
-	};
+function noudaAs() {
+	document.getElementById("tbody").innerHTML = "";
+	fetch("asiakkaat/" + document.getElementById("term").value, {method: 'GET'})
+	.then(function (response) {//Odotetaan vastausta ja muutetaan JSON-vastaus objektiksi
+		return response.json(); 	
+	})
+	.then(function (responseJson) {
+		var asiakkaat = responseJson.asiakkaat; 
+		var rowStr = ""; 
+		for(var i=0; i<asiakkaat.length; i++) {
+			rowStr+="<tr>";
+			rowStr+="<td>"+asiakkaat[i].etunimi+"</td>";
+			rowStr+="<td>"+asiakkaat[i].sukunimi+"</td>";
+			rowStr+="<td>"+asiakkaat[i].puhelin+"</td>";
+			rowStr+="<td>"+asiakkaat[i].sposti+"</td>";
+			rowStr+="<td><a href='muutaasiakas.jsp?asiakas_id="+asiakkaat[i].asiakas_id+"'>Muuta</a>&nbsp;";
+			rowStr+="<span class='delete' onclick=poista("+asiakkaat[i].asiakas_id+",'"+asiakkaat[i].etunimi+"','"+asiakkaat[i].sukunimi+"')>Poista</span></td>";
+			rowStr+="</tr>";
+		}
+		document.getElementById("tbody").innerHTML = rowStr;
+	})
+	}
 	
 	function poista(asiakas_id, etunimi, sukunimi) {
 		if(confirm("Poista asiakas " + etunimi +" "+ sukunimi + "?")){
-			$.ajax({url:"asiakkaat/"+asiakas_id, type:"DELETE", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}
-		        if(result.response==0){
-		        	$("#ilmo").html("Asiakasta ei voitu poistaa.");
-		        }else if(result.response==1){
-		        	$("#rivi_"+asiakas_id).css("background-color", "red"); 
-		        	alert("Asiakkaan " + asiakas_id +" poisto onnistui.");
-					noudaAs();        	
-				}
-		    }});
+			fetch("asiakkaat/"+asiakas_id, {method: 'DELETE'})
+			.then(function (response) {
+				return response.json()
+			})
+			.then(function (responseJson) {//Otetaan vastaan objekti responseJson-parametriss�		
+			var vastaus = responseJson.response;		
+			if(vastaus==0){
+				document.getElementById("ilmo").innerHTML= "Asiakasta ei voitu poistaa.";
+	        }else if(vastaus==1){	        	
+	        	document.getElementById("ilmo").innerHTML="Asiakkaan " + asiakas_id +" poisto onnistui..";
+				noudaAs();        	
+			}	
+			setTimeout(function(){ document.getElementById("ilmo").innerHTML=""; }, 5000);
+		})
 		}
-		
-	};
+	}; 
 	
 </script>
 

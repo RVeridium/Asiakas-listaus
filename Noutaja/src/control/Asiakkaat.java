@@ -80,7 +80,7 @@ public class Asiakkaat extends HttpServlet {
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//System.out.println("Asiakkaat.doPut()");
+		System.out.println("Asiakkaat.doPut()");
 		JSONObject jsonObj = new JsonStrToObj().convert(request);
 		String as_id = jsonObj.getString("asiakas_id"); 
 		Asiakas asiakas = new Asiakas();
@@ -100,7 +100,7 @@ public class Asiakkaat extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Asiakkaat.doDelete()");
-		String pathInfo = request.getPathInfo();	//haetaan kutsun polkutiedot, esim. /ABC-222		
+		String pathInfo = request.getPathInfo(); 	
 		System.out.println("polku: "+pathInfo);
 		String poisto_id = pathInfo.replace("/", "");		
 		response.setContentType("application/json");
